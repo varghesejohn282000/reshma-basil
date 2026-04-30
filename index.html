@@ -25,6 +25,41 @@
     ::-webkit-scrollbar-track { background: var(--cream); }
     ::-webkit-scrollbar-thumb { background: var(--green-light); border-radius: 2px; }
 
+    /* ─── REEL CARD ─── */
+    .reel-card {
+      display: flex !important;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 0 !important;
+      overflow: hidden;
+      border: none !important;
+      background: #000 !important;
+    }
+    .reel-card .alb-icon,
+    .reel-card h4,
+    .reel-card .alb-date {
+      display: none;
+    }
+    .reel-embed-mini {
+      width: 100%;
+      height: 100%;
+      min-height: 400px;
+    }
+    .reel-embed-mini iframe {
+      width: 100% !important;
+      height: 100% !important;
+      min-height: 400px !important;
+      border: none !important;
+    }
+    @media(max-width:560px){
+      .reel-embed-mini {
+        min-height: 500px;
+      }
+      .reel-embed-mini iframe {
+        min-height: 500px !important;
+      }
+    }
+
     /* ─── HERO ─── */
     .hero {
       min-height: 100vh;
@@ -598,6 +633,12 @@
           <p class="alb-date">13 April · Mulavoor</p>
           <span class="alb-cta">View Album</span>
         </a>
+        <div class="album-card reveal r3 reel-card">
+          <div class="alb-icon">🎬</div>
+          <h4>Highlight Reel</h4>
+          <p class="alb-date">Save the Date</p>
+          <div id="videoContainer" class="reel-embed-mini"></div>
+        </div>
       </div>
     </div>
   </section>
@@ -651,6 +692,66 @@
   </footer>
 
   <script>
+    // ═══ VIDEO REEL EMBED ═══
+    const REEL_LINK = "https://www.instagram.com/p/DXviBN7zuevKMmEZF6XLuc0A-ls0iq7YJPTn3Y0/"; // Instagram Post
+    
+    const videoContainer = document.getElementById('videoContainer');
+
+    // Function to extract video ID and create embed
+    function embedReel(link) {
+      let embedHTML = '';
+
+      // Instagram Post or Reel
+      if (link.includes('instagram.com')) {
+        let postId = '';
+        
+        // Try to extract reel ID
+        if (link.includes('/reel/')) {
+          postId = link.split('/reel/')[1]?.split('/')[0];
+        }
+        // Try to extract post ID
+        else if (link.includes('/p/')) {
+          postId = link.split('/p/')[1]?.split('/')[0];
+        }
+        
+        if (postId) {
+          embedHTML = `<iframe src="https://www.instagram.com/p/${postId}/embed/captioned/" width="100%" height="100%" frameborder="0" scrolling="no" allowtransparency="true" allow="encrypted-media"></iframe>`;
+        }
+      }
+      // YouTube Video
+      else if (link.includes('youtube.com/watch')) {
+        const videoId = new URL(link).searchParams.get('v');
+        if (videoId) {
+          embedHTML = `<iframe width="100%" height="100%" src="https://www.youtube.com/embed/${videoId}?autoplay=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+        }
+      }
+      // YouTube Shorts
+      else if (link.includes('youtube.com/shorts')) {
+        const videoId = link.split('/shorts/')[1]?.split('?')[0];
+        if (videoId) {
+          embedHTML = `<iframe width="100%" height="100%" src="https://www.youtube.com/embed/${videoId}?autoplay=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+        }
+      }
+      // Vimeo
+      else if (link.includes('vimeo.com')) {
+        const videoId = link.split('/').pop();
+        if (videoId && !isNaN(videoId)) {
+          embedHTML = `<iframe src="https://player.vimeo.com/video/${videoId}?autoplay=1" width="100%" height="100%" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>`;
+        }
+      }
+
+      if (embedHTML && videoContainer) {
+        videoContainer.innerHTML = embedHTML;
+      }
+    }
+
+    // Load video on page load
+    window.addEventListener('load', () => {
+      if (REEL_LINK) {
+        embedReel(REEL_LINK);
+      }
+    });
+
     // Scroll reveal
     const obs = new IntersectionObserver(entries => {
       entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
