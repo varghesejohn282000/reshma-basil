@@ -27,47 +27,12 @@
 
     /* ─── REEL CARD ─── */
     .reel-card {
-      display: flex !important;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      padding: 0 !important;
-      overflow: hidden;
-      border: none !important;
-      background: #000 !important;
-      position: relative;
-      min-height: 500px;
+      background: rgba(255,255,255,0.04) !important;
+      border: 1px solid rgba(255,255,255,0.09) !important;
     }
-    .reel-card .alb-icon,
-    .reel-card h4,
-    .reel-card .alb-date {
-      display: none;
-    }
-    .reel-embed-mini {
-      width: 100%;
-      height: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 500px;
-    }
-    .reel-embed-mini iframe {
-      width: 100% !important;
-      height: 100% !important;
-      min-height: 500px !important;
-      border: none !important;
-      display: block !important;
-    }
-    @media(max-width:560px){
-      .reel-card {
-        min-height: 600px;
-      }
-      .reel-embed-mini {
-        min-height: 600px;
-      }
-      .reel-embed-mini iframe {
-        min-height: 600px !important;
-      }
+    .reel-card:hover {
+      background: rgba(255,255,255,0.12) !important;
+      border-color: rgba(197,160,90,0.5) !important;
     }
 
     /* ─── HERO ─── */
@@ -643,12 +608,12 @@
           <p class="alb-date">13 April · Mulavoor</p>
           <span class="alb-cta">View Album</span>
         </a>
-        <div class="album-card reveal r3 reel-card">
+        <a class="album-card reveal r3 reel-card" href="https://www.instagram.com/p/DXviBN7zuevKMmEZF6XLuc0A-ls0iq7YJPTn3Y0/" target="_blank" rel="noopener">
           <div class="alb-icon">🎬</div>
           <h4>Highlight Reel</h4>
           <p class="alb-date">Save the Date</p>
-          <div id="videoContainer" class="reel-embed-mini"></div>
-        </div>
+          <span class="alb-cta">Watch on Instagram</span>
+        </a>
       </div>
     </div>
   </section>
@@ -702,69 +667,6 @@
   </footer>
 
   <script>
-    // ═══ VIDEO REEL EMBED ═══
-    const REEL_LINK = "https://www.instagram.com/p/DXviBN7zuevKMmEZF6XLuc0A-ls0iq7YJPTn3Y0/"; // Instagram Post
-    
-    const videoContainer = document.getElementById('videoContainer');
-
-    // Function to extract post ID and create embed
-    function embedReel(link) {
-      let embedHTML = '';
-
-      // Instagram Post or Reel - Using direct iframe without embed script
-      if (link.includes('instagram.com')) {
-        let postId = '';
-        
-        // Try to extract reel ID
-        if (link.includes('/reel/')) {
-          postId = link.split('/reel/')[1]?.split('/')[0];
-        }
-        // Try to extract post ID
-        else if (link.includes('/p/')) {
-          postId = link.split('/p/')[1]?.split('/')[0];
-        }
-        
-        if (postId) {
-          // Use direct iframe without Instagram's problematic embed script
-          embedHTML = `<iframe src="https://www.instagram.com/p/${postId}/embed/" width="100%" height="100%" frameborder="0" scrolling="no" allowtransparency="true"></iframe>`;
-        }
-      }
-      // YouTube Video
-      else if (link.includes('youtube.com/watch')) {
-        const videoId = new URL(link).searchParams.get('v');
-        if (videoId) {
-          embedHTML = `<iframe width="100%" height="100%" src="https://www.youtube.com/embed/${videoId}?autoplay=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
-        }
-      }
-      // YouTube Shorts
-      else if (link.includes('youtube.com/shorts')) {
-        const videoId = link.split('/shorts/')[1]?.split('?')[0];
-        if (videoId) {
-          embedHTML = `<iframe width="100%" height="100%" src="https://www.youtube.com/embed/${videoId}?autoplay=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
-        }
-      }
-      // Vimeo
-      else if (link.includes('vimeo.com')) {
-        const videoId = link.split('/').pop();
-        if (videoId && !isNaN(videoId)) {
-          embedHTML = `<iframe src="https://player.vimeo.com/video/${videoId}?autoplay=1" width="100%" height="100%" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>`;
-        }
-      }
-
-      if (embedHTML && videoContainer) {
-        videoContainer.innerHTML = embedHTML;
-      }
-    }
-
-    // Load video on page load with slight delay for better stability
-    window.addEventListener('load', () => {
-      if (REEL_LINK) {
-        setTimeout(() => {
-          embedReel(REEL_LINK);
-        }, 500);
-      }
-    });
-
     // Scroll reveal
     const obs = new IntersectionObserver(entries => {
       entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
